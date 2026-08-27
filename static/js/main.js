@@ -96,14 +96,13 @@ $(document).ready(function () {
     if (again) text = "done";
 
     $.ajax({
-      url: "http://127.0.0.1:5000/symptom",
+      url: "/symptom",
       data: JSON.stringify({ sentence: text }),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       type: "POST",
       success: function (response) {
-        console.log(response);
-        if (!again) $.fn.appendBotMessage(response);
+        if (!again) $.fn.appendBotMessage(response.response);
       },
       error: function () {
         console.log("Error");
