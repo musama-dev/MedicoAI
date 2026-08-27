@@ -15,7 +15,11 @@ from . import routes
 def create_app(config=None):
     """Application factory: build and configure a MedicoAI Flask app."""
     config = config or Config
-    app = Flask(__name__)
+    app = Flask(
+        __name__,
+        template_folder=str(config.BASE_DIR / "templates"),
+        static_folder=str(config.BASE_DIR / "static"),
+    )
     app.config.from_object(config)
 
     # Load datasets and models once so every request reuses them.
