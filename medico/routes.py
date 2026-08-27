@@ -40,6 +40,22 @@ def model_info():
     )
 
 
+@bp.route("/api/conversation")
+def conversation_state():
+    """Return the symptoms collected so far in this session."""
+    service = _current_service()
+    return jsonify({"symptoms": sorted(service.user_symptoms)})
+
+
+@bp.route("/api/reset", methods=["POST"])
+def reset_conversation():
+    """Clear all symptoms collected in this session."""
+    service = _current_service()
+    service.reset()
+    _persist_service(service)
+    return jsonify({"status": "reset"})
+
+
 @bp.route("/api/symptoms")
 def list_symptoms():
     """Return the full list of symptoms used for autocomplete."""
