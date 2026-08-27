@@ -17,7 +17,7 @@ def test_symptom_data_loads_all_datasets():
 
 def test_nlp_model_classifies_known_symptom():
     model = NlpModel()
-    tag, confidence = model.classify(["headache"])
+    tag, confidence = model.classify("headache")
     assert isinstance(tag, str)
     assert 0.0 <= confidence <= 1.0
 
