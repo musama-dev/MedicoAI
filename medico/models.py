@@ -14,7 +14,9 @@ from .config import Config
 class NlpModel:
     """Thin wrapper around the PyTorch symptom-classification model."""
 
-    def __init__(self, path, device=None):
+    def __init__(self, path=None, device=None):
+        if path is None:
+            path = Config.BASE_DIR / Config.MODEL_FILE
         device = device or torch.device("cpu")
         checkpoint = torch.load(path, map_location=device)
 
@@ -49,7 +51,9 @@ class NlpModel:
 class DiseasePredictor:
     """Thin wrapper around the scikit-learn disease predictor."""
 
-    def __init__(self, path):
+    def __init__(self, path=None):
+        if path is None:
+            path = Config.BASE_DIR / Config.PREDICTION_MODEL_FILE
         with open(path, "rb") as handle:
             self.model = pickle.load(handle)
 
