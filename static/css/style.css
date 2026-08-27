@@ -302,6 +302,12 @@ body {
   padding: 5px !important;
 }
 
+.reply-emojis,
+.reply-send {
+  border: none;
+  background: transparent;
+}
+
 .reply-emojis i {
   text-align: center;
   padding: 5px 5px 5px 5px !important;
