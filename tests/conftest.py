@@ -1,5 +1,9 @@
 """Shared pytest fixtures for the MedicoAI application."""
 
+# Import torch before anything that pulls in sklearn/nltk. On Windows
+# their bundled runtime DLLs conflict with torch's and break the import.
+import torch  # noqa: F401
+
 import pytest
 
 from medico import create_app

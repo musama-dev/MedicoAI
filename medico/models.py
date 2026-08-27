@@ -3,9 +3,12 @@
 import pickle
 from pathlib import Path
 
+# Import torch before nltk/sklearn: on Windows these packages ship
+# conflicting OpenMP runtime DLLs and torch fails to load otherwise.
+import torch
+
 import nltk
 import numpy as np
-import torch
 
 from nnet import NeuralNet
 from nltk_utils import bag_of_words
