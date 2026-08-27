@@ -40,7 +40,27 @@ def create_app(config=None):
     _register_error_handlers(app)
     _configure_logging(app)
     _register_request_logging(app)
+    _register_security_headers(app)
     return app
+
+
+def _register_security_headers(app):
+    """Apply baseline security headers to every response."""
+
+    @app.after_request
+    def _add_security_headers(response):
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault(
+            "Content-Security-Policy",
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://ajax.googleapis.com "
+            "https://cdnjs.cloudflare.com; "
+            "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
+            "https://maxcdn.bootstrapcdn.com; "
+            "img-src 'self' data: https://bootdey.com;",
+        )
+        response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+        return response
 
 
 def _register_request_logging(app):
