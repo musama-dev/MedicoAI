@@ -57,7 +57,7 @@ def _register_security_headers(app):
             "https://cdnjs.cloudflare.com; "
             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
             "https://maxcdn.bootstrapcdn.com; "
-            "img-src 'self' data: https://bootdey.com;",
+            "img-src 'self' data:;",
         )
         response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
         return response
