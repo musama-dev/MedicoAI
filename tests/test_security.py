@@ -9,10 +9,12 @@ def test_security_headers_present(client):
 
 
 def test_session_cookie_is_set(client):
-    client.post("/symptom", json={"sentence": "done"})
-    assert "session" in client.cookie_jar
+    response = client.post("/symptom", json={"sentence": "done"})
+    set_cookie = response.headers.get("Set-Cookie") or ""
+    assert "session=" in set_cookie
 
 
 def test_symptoms_are_stored_in_session(client):
-    client.post("/symptom", json={"sentence": "I have a headache"})
-    assert "session" in client.cookie_jar
+    response = client.post("/symptom", json={"sentence": "I have a headache"})
+    set_cookie = response.headers.get("Set-Cookie") or ""
+    assert "session=" in set_cookie
