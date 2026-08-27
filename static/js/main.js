@@ -1,3 +1,10 @@
+// Escape HTML so user and bot text cannot inject markup or scripts.
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 $(document).ready(function () {
   symptoms = JSON.parse(symptoms);
   let input = $("#message-text");
@@ -78,12 +85,13 @@ $(document).ready(function () {
 
   // Creates the newly sent message element
   $.fn.appendUserMessage = function () {
-    var text = input.val();
+    var text = escapeHtml(input.val());
     $("#conversation").append(
       `<div class="row message-body"><div class="col-sm-12 message-main-sender"><div class="sender"><div class="message-text">${text}</div></div></div></div>`
     );
   };
 
+  // Bot replies are trusted server text that may include <br> and <b> markup.
   $.fn.appendBotMessage = function (text) {
     $("#conversation").append(
       `<div class="row message-body"><div class="col-sm-12 message-main-receiver"><div class="receiver"><div class="message-text">${text}</div></div></div></div>`
