@@ -1,3 +1,11 @@
+// Format the current time as HH:MM for message timestamps.
+function currentTime() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return hours + ":" + minutes;
+}
+
 // Limit how often a function can run, used for the autocomplete input.
 function debounce(fn, delay) {
   let timer;
@@ -134,14 +142,14 @@ $(document).ready(function () {
   $.fn.appendUserMessage = function (rawText) {
     var text = escapeHtml(rawText);
     $("#conversation").append(
-      `<div class="row message-body"><div class="col-sm-12 message-main-sender"><div class="sender"><div class="message-text">${text}</div></div></div></div>`
+      `<div class="row message-body"><div class="col-sm-12 message-main-sender"><div class="sender"><div class="message-text">${text}</div><div class="message-time">${currentTime()}</div></div></div></div>`
     );
   };
 
   // Bot replies are trusted server text that may include <br> and <b> markup.
   $.fn.appendBotMessage = function (text) {
     $("#conversation").append(
-      `<div class="row message-body"><div class="col-sm-12 message-main-receiver"><div class="receiver"><div class="message-text">${text}</div></div></div></div>`
+      `<div class="row message-body"><div class="col-sm-12 message-main-receiver"><div class="receiver"><div class="message-text">${text}</div><div class="message-time">${currentTime()}</div></div></div></div>`
     );
   };
 
