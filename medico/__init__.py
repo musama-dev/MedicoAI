@@ -3,7 +3,7 @@
 import json
 import logging
 
-from flask import Flask
+from flask import Flask, jsonify
 
 from .config import Config
 from .data import SymptomData
@@ -37,8 +37,34 @@ def create_app(config=None):
 
     app.register_blueprint(routes.bp)
 
+    _register_error_handlers(app)
     _configure_logging(app)
     return app
+
+
+def _register_error_handlers(app):
+    """Return JSON errors for API-style requests."""
+
+    def _json_error(message, status):
+        response = jsonify({"error": message})
+        response.status_code = status
+        return response
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return _json_error("Bad request.", 400)
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return _json_error("Resource not found.", 404)
+
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return _json_error("Method not allowed.", 405)
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return _json_error("Internal server error.", 500)
 
 
 def _configure_logging(app):
