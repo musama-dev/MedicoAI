@@ -1,3 +1,13 @@
+// Limit how often a function can run, used for the autocomplete input.
+function debounce(fn, delay) {
+  let timer;
+  return function () {
+    const args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
 // Escape HTML so user and bot text cannot inject markup or scripts.
 function escapeHtml(text) {
   const div = document.createElement("div");
@@ -14,18 +24,18 @@ $(document).ready(function () {
   let chat = $("#conversation");
 
   // Handler for any input on the message input field
-  input.on("input", function () {
+  input.on("input", debounce(function () {
     let insertedValue = $(this).val();
     $("#symptoms-list").empty();
 
     if (insertedValue.length > 1) {
-      ssymptoms = $.fn.getSuggestedSymptoms(insertedValue);
-      if (ssymptoms.length === 0) {
+      let matches = $.fn.getSuggestedSymptoms(insertedValue);
+      if (matches.length === 0) {
         $(".symptoms-list-container ").slideUp();
       } else {
-        for (let i = 0; i < ssymptoms.length; i++) {
+        for (let i = 0; i < matches.length; i++) {
           var li = document.createElement("li");
-          li.textContent = ssymptoms[i];
+          li.textContent = matches[i];
           dataList.append(li);
         }
         $(".symptoms-list-container ").slideDown();
@@ -33,7 +43,7 @@ $(document).ready(function () {
     } else {
       $(".symptoms-list-container ").slideUp();
     }
-  });
+  }, 150));
 
   startOverBtn.on("click", function () {
     $.fn.startOver();
