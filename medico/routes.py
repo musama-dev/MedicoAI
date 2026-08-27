@@ -1,5 +1,7 @@
 """HTTP routes for the MedicoAI application."""
 
+import json
+
 from flask import Blueprint, jsonify, render_template, request
 
 from .config import Config
