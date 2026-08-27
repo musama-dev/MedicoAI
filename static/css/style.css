@@ -94,10 +94,17 @@ body {
   cursor: pointer;
 }
 
-.heading-avatar-icon img {
+.heading-avatar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   height: 40px;
   width: 40px;
+  background-color: #ffffff;
+  color: #f50057;
+  font-weight: 700;
+  font-size: 20px;
 }
 
 .heading-title {
@@ -490,7 +497,7 @@ body {
     padding: 0 !important;
   }
 
-  .heading-avatar-icon img {
+  .heading-avatar-icon {
     height: 50px;
     width: 50px;
   }
