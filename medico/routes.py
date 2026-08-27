@@ -1,7 +1,5 @@
 """HTTP routes for the MedicoAI application."""
 
-import json
-
 from flask import Blueprint, jsonify, render_template, request, session
 
 from .config import Config
@@ -14,8 +12,11 @@ def index():
     """Serve the chat interface and reset the conversation state."""
     service = _current_service()
     service.reset()
+    _persist_service(service)
     data = _current_data()
-    return render_template("index.html", data=json.dumps(data.suggested_symptoms))
+    return render_template(
+        "index.html", symptoms=data.suggested_symptoms
+    )
 
 
 @bp.route("/health")

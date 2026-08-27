@@ -24,7 +24,6 @@ function escapeHtml(text) {
 }
 
 $(document).ready(function () {
-  symptoms = JSON.parse(symptoms);
   let input = $("#message-text");
   let sendBtn = $("#send");
   let startOverBtn = $("#start-over");

@@ -22,13 +22,9 @@
     />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript">
-      let symptoms = [];
-
-      function getSymptomsData(data) {
-        symptoms = data;
-      }
-      getSymptomsData({{data | tojson }});
-      // getSymptomsData('{{ data | tojson }}');
+      // The server passes the symptom list directly; Jinja's tojson filter
+      // escapes it safely for embedding in JavaScript.
+      const symptoms = {{ symptoms | tojson }};
     </script>
     <title>Medical Chatbot</title>
   </head>
