@@ -3,7 +3,7 @@
 import json
 import logging
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 from .config import Config
 from .data import SymptomData
@@ -39,7 +39,34 @@ def create_app(config=None):
 
     _register_error_handlers(app)
     _configure_logging(app)
+    _register_request_logging(app)
     return app
+
+
+def _register_request_logging(app):
+    """Log every request with its duration and status code."""
+
+    @app.before_request
+    def _start_timer():
+        from time import perf_counter
+
+        request.environ["_request_start"] = perf_counter()
+
+    @app.after_request
+    def _log_request(response):
+        from time import perf_counter
+
+        started = request.environ.get("_request_start")
+        if started is not None:
+            duration_ms = (perf_counter() - started) * 1000
+            app.logger.info(
+                "%s %s -> %s (%.1fms)",
+                request.method,
+                request.path,
+                response.status_code,
+                duration_ms,
+            )
+        return response
 
 
 def _register_error_handlers(app):
