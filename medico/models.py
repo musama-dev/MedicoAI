@@ -3,6 +3,7 @@
 import pickle
 from pathlib import Path
 
+import nltk
 import numpy as np
 import torch
 
@@ -33,8 +34,8 @@ class NlpModel:
         self.model.eval()
 
     def classify(self, sentence):
-        """Classify a tokenized sentence into a symptom tag with confidence."""
-        tokenized = sentence
+        """Classify a sentence into a symptom tag with confidence."""
+        tokenized = nltk.word_tokenize(sentence)
         features = bag_of_words(tokenized, self.all_words)
         features = features.reshape(1, features.shape[0])
         tensor = torch.from_numpy(features)
