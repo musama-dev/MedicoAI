@@ -404,7 +404,8 @@ body {
   padding: 2px 10px;
 }
 
-#symptoms-list li:hover {
+#symptoms-list li:hover,
+#symptoms-list li.suggestion-active {
   cursor: pointer;
   background-color: white;
 }

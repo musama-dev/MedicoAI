@@ -64,9 +64,29 @@ $(document).ready(function () {
     $(".symptoms-list-container ").slideUp();
   });
 
-  input.on("keypress", function (e) {
-    if (e.which == 13) {
-      $.fn.handleUserMessage();
+  input.on("keydown", function (e) {
+    if (e.which == 40) {
+      // Arrow down: move into the suggestion list.
+      e.preventDefault();
+      let items = dataList.children("li");
+      if (items.length) {
+        items.first().addClass("suggestion-active");
+        dataList.children("li").not(".suggestion-active").removeClass("suggestion-active");
+      }
+    } else if (e.which == 38) {
+      // Arrow up: leave the suggestion list.
+      e.preventDefault();
+      dataList.children("li").removeClass("suggestion-active");
+    } else if (e.which == 13) {
+      let active = dataList.children("li.suggestion-active");
+      if (active.length) {
+        e.preventDefault();
+        input.val(active.text());
+        dataList.children("li").removeClass("suggestion-active");
+        $(".symptoms-list-container ").slideUp();
+      } else {
+        $.fn.handleUserMessage();
+      }
     }
   });
 
