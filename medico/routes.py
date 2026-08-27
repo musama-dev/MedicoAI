@@ -2,7 +2,7 @@
 
 import json
 
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request, session
 
 from .config import Config
 
@@ -50,13 +50,22 @@ def predict_symptom():
 
     service = _current_service()
     response_text = _handle_message(service, sentence)
+    _persist_service(service)
     return jsonify({"response": response_text})
 
 
 def _current_service():
+    """Build a service whose symptoms are restored from the session."""
     from flask import current_app
 
-    return current_app.extensions["medico_service_factory"]()
+    service = current_app.extensions["medico_service_factory"]()
+    service.user_symptoms = set(session.get("symptoms", []))
+    return service
+
+
+def _persist_service(service):
+    """Store the conversation's symptoms back into the session."""
+    session["symptoms"] = sorted(service.user_symptoms)
 
 
 def _current_data():
@@ -73,6 +82,11 @@ def _handle_message(service, sentence):
     symptom, confidence = service.recognize_symptom(sentence)
     threshold = Config.SYMPTOM_CONFIDENCE_THRESHOLD
     if confidence > threshold:
+        if len(service.user_symptoms) >= Config.MAX_SYMPTOMS_PER_SESSION:
+            return (
+                "You've already entered the maximum number of symptoms. "
+                "Write 'done' to get your prediction."
+            )
         service.add_symptom(symptom)
         return f"Hmm, I'm {confidence * 100:.2f}% sure this is {symptom}."
     return service.UNRECOGNIZED_RESPONSE
