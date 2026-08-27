@@ -164,14 +164,14 @@ $(document).ready(function () {
   $.fn.appendUserMessage = function (rawText) {
     var text = escapeHtml(rawText);
     $("#conversation").append(
-      `<div class="row message-body"><div class="col-sm-12 message-main-sender"><div class="sender"><div class="message-text">${text}</div><div class="message-time">${currentTime()}</div></div></div></div>`
+      `<div class="row message-body message-enter"><div class="col-sm-12 message-main-sender"><div class="sender"><div class="message-text">${text}</div><div class="message-time">${currentTime()}</div></div></div></div>`
     );
   };
 
   // Bot replies are trusted server text that may include <br> and <b> markup.
   $.fn.appendBotMessage = function (text) {
     $("#conversation").append(
-      `<div class="row message-body"><div class="col-sm-12 message-main-receiver"><div class="receiver"><div class="message-text">${text}</div><div class="message-time">${currentTime()}</div></div></div></div>`
+      `<div class="row message-body message-enter"><div class="col-sm-12 message-main-receiver"><div class="receiver"><div class="message-text">${text}</div><div class="message-time">${currentTime()}</div></div></div></div>`
     );
   };
 
@@ -197,6 +197,7 @@ $(document).ready(function () {
             $.fn.updateSymptomCount(0);
           }
         }
+        input.focus();
       },
       error: function () {
         $.fn.hideTypingIndicator();
