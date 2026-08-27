@@ -28,6 +28,7 @@ $(document).ready(function () {
   let input = $("#message-text");
   let sendBtn = $("#send");
   let startOverBtn = $("#start-over");
+  let doneBtn = $("#done-btn");
   let dataList = $("#symptoms-list");
   let chat = $("#conversation");
 
@@ -59,6 +60,12 @@ $(document).ready(function () {
 
   sendBtn.on("click", function () {
     $.fn.handleUserMessage();
+  });
+
+  doneBtn.on("click", function () {
+    if (!$.fn.isRequestInFlight) {
+      $.fn.getPredictedSymptom("done");
+    }
   });
 
   // Handler for click on one of the suggested symptoms
