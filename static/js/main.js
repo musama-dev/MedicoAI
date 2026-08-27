@@ -62,18 +62,35 @@ $(document).ready(function () {
 
   // Handler function for sending a message
   $.fn.handleUserMessage = function () {
-    if (input.val()) {
-      $.fn.appendUserMessage();
-      $.fn.getPredictedSymptom();
+    var text = input.val();
+    if (text && !$.fn.isRequestInFlight) {
+      $.fn.appendUserMessage(text);
       input.val("");
-      chat.animate({
-        scrollTop: $("#conversation .message-body:last-child").position().top,
-      });
+      $.fn.scrollToBottom();
+      $.fn.showTypingIndicator();
+      $.fn.getPredictedSymptom(text);
     }
   };
 
+  $.fn.isRequestInFlight = false;
+
+  $.fn.showTypingIndicator = function () {
+    $("#conversation").append(
+      `<div class="row message-body" id="typing-indicator"><div class="col-sm-12 message-main-receiver"><div class="receiver"><div class="message-text"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div></div></div>`
+    );
+    $.fn.scrollToBottom();
+  };
+
+  $.fn.hideTypingIndicator = function () {
+    $("#typing-indicator").remove();
+  };
+
+  $.fn.scrollToBottom = function () {
+    chat.scrollTop(chat.prop("scrollHeight"));
+  };
+
   $.fn.startOver = function () {
-    $.fn.getPredictedSymptom(true);
+    $.fn.getPredictedSymptom("done");
     $("#conversation").empty();
     const text =
       "Welcome! I'm Medical Chatbot, but you can call me Meddy. What symptoms are you currently experiencing? When you've entered all of your symptoms, please write '<b>Done</b>'. Make sure you enter as much symptoms as possible so the prediction can be as correct as possible.";
@@ -84,8 +101,8 @@ $(document).ready(function () {
   };
 
   // Creates the newly sent message element
-  $.fn.appendUserMessage = function () {
-    var text = escapeHtml(input.val());
+  $.fn.appendUserMessage = function (rawText) {
+    var text = escapeHtml(rawText);
     $("#conversation").append(
       `<div class="row message-body"><div class="col-sm-12 message-main-sender"><div class="sender"><div class="message-text">${text}</div></div></div></div>`
     );
@@ -99,9 +116,9 @@ $(document).ready(function () {
   };
 
   // Retreives prediction to show as bot message
-  $.fn.getPredictedSymptom = function (again) {
-    var text = input.val();
-    if (again) text = "done";
+  $.fn.getPredictedSymptom = function (rawText) {
+    var text = rawText;
+    $.fn.isRequestInFlight = true;
 
     $.ajax({
       url: "/symptom",
@@ -110,10 +127,15 @@ $(document).ready(function () {
       dataType: "json",
       type: "POST",
       success: function (response) {
+        $.fn.hideTypingIndicator();
         if (!again) $.fn.appendBotMessage(response.response);
       },
       error: function () {
-        console.log("Error");
+        $.fn.hideTypingIndicator();
+        $.fn.appendBotMessage("Sorry, something went wrong. Please try again.");
+      },
+      complete: function () {
+        $.fn.isRequestInFlight = false;
       },
     });
   };
