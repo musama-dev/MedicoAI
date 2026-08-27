@@ -24,6 +24,22 @@ def health():
     return jsonify({"status": "ok"})
 
 
+@bp.route("/api/model")
+def model_info():
+    """Expose model metadata for debugging and health checks."""
+    from flask import current_app
+
+    nlp = current_app.extensions["medico_nlp"]
+    return jsonify(
+        {
+            "input_size": nlp.input_size,
+            "hidden_size": nlp.hidden_size,
+            "symptom_tags": len(nlp.tags),
+            "vocabulary_size": len(nlp.all_words),
+        }
+    )
+
+
 @bp.route("/api/symptoms")
 def list_symptoms():
     """Return the full list of symptoms used for autocomplete."""
