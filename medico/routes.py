@@ -24,6 +24,13 @@ def health():
     return jsonify({"status": "ok"})
 
 
+@bp.route("/api/symptoms")
+def list_symptoms():
+    """Return the full list of symptoms used for autocomplete."""
+    data = _current_data()
+    return jsonify({"symptoms": data.suggested_symptoms})
+
+
 @bp.route("/symptom", methods=["POST"])
 def predict_symptom():
     """Handle a single user message and return the chatbot reply."""
