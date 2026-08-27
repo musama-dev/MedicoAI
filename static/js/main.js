@@ -109,6 +109,15 @@ $(document).ready(function () {
     }
   });
 
+  $.fn.symptomCount = 0;
+
+  $.fn.updateSymptomCount = function (delta) {
+    $.fn.symptomCount = Math.max(0, $.fn.symptomCount + (delta || 0));
+    $("#symptom-count").text(
+      $.fn.symptomCount + ($.fn.symptomCount === 1 ? " symptom" : " symptoms")
+    );
+  };
+
   // Handler function for sending a message
   $.fn.handleUserMessage = function () {
     var text = input.val();
@@ -139,6 +148,8 @@ $(document).ready(function () {
   };
 
   $.fn.startOver = function () {
+    $.fn.symptomCount = 0;
+    $.fn.updateSymptomCount(0);
     $.fn.getPredictedSymptom("done");
     $("#conversation").empty();
     const text =
@@ -177,7 +188,15 @@ $(document).ready(function () {
       type: "POST",
       success: function (response) {
         $.fn.hideTypingIndicator();
-        if (!again) $.fn.appendBotMessage(response.response);
+        if (!again) {
+          $.fn.appendBotMessage(response.response);
+          if (response.response.indexOf("sure this is") !== -1) {
+            $.fn.updateSymptomCount(1);
+          } else if (response.response.indexOf("you have") !== -1) {
+            $.fn.symptomCount = 0;
+            $.fn.updateSymptomCount(0);
+          }
+        }
       },
       error: function () {
         $.fn.hideTypingIndicator();
