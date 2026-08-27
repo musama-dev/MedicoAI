@@ -55,7 +55,11 @@ $(document).ready(function () {
   }, 150));
 
   startOverBtn.on("click", function () {
-    $.fn.startOver();
+    if (
+      window.confirm("Start a new conversation? Your symptoms will be cleared.")
+    ) {
+      $.fn.startOver();
+    }
   });
 
   sendBtn.on("click", function () {
