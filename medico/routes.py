@@ -72,7 +72,7 @@ def predict_symptom():
         )
 
     service = _current_service()
-    response_text = _handle_message(service, sentence)
+    response_text = _handle_message(service, sentence.strip())
     _persist_service(service)
     return jsonify({"response": response_text})
 
